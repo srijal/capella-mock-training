@@ -1,0 +1,19 @@
+#%RAML 1.0
+baseUri: https://mocksvc.mulesoft.com/mocks/bdd87a87-91ef-47e0-bfe4-985346f99bf6 # 
+title: capella-send-event-training
+
+types: 
+  message: !include datatype/postMessage.raml
+
+/sendmessage:
+  post:
+    body: 
+      application/json:
+        type: message
+        example: !include example/postMessage.raml
+    responses: 
+      201:
+        body: 
+          application/json:
+            example:
+              message: "Event created on message server"

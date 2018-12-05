@@ -1,0 +1,4 @@
+authenticated.users=[{"id"\:"426e1b86-cda2-4832-a730-d4a48c3d5690","token"\:"83dae2f5-36cc-4ad3-a91c-da9fd5e3bd83","userId"\:"santosh-rijal-concordusa","refreshToken"\:"","baseUrl"\:"https\://anypoint.mulesoft.com/"}]
+current.token=83dae2f5-36cc-4ad3-a91c-da9fd5e3bd83
+current.user=santosh-rijal-concordusa
+eclipse.preferences.version=1
