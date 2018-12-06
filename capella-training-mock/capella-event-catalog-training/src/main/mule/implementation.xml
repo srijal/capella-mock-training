@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<flow name="getEventCatalogs" doc:id="88d2f626-913d-4ae9-9621-067ec61d4da9" >
+		<db:select doc:name="Select all Event Catalog" doc:id="155a6e9b-2096-4bf8-b491-4a841cc55cb9" config-ref="Database_Config">
+			<db:sql >SELECT * FROM EventCatalog</db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="89854cc8-01e0-4f50-a290-bde5882d2412" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	id: payload01.ID,
+	eventtypeid: payload01.EventTypeID,
+	eventname: payload01.EventName,
+	exchangename: payload01.ExchangeName,
+	exchangetype: payload01.ExchangeType,
+	queuename: payload01.QueueName
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="4dcab1e2-fd96-4dd5-8a2c-e9bc9c94d2a5" />
+	</flow>
+	<flow name="getEventCatalogByID" doc:id="b2d45fdb-dfcc-42ee-816a-185ae9a3ea62" >
+		<db:select doc:name="Select Event Catalog by ID" doc:id="3c32bda4-f0f9-4df7-84d8-0226dddc8847" config-ref="Database_Config">
+			<db:sql >SELECT * FROM EventCatalog 
+WHERE ID= :ID
+</db:sql>
+			<db:input-parameters ><![CDATA[#[output application/java
+ ---
+ {
+     'ID' : attributes.uriParams.ID
+ }]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="eb1dd674-32ba-411c-b6a1-2c938445ad99" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload map ( payload , indexOfPayload ) -> {
+	id: payload.ID,
+	eventtypeid: payload.EventTypeID,
+	eventname: payload.EventName,
+	exchangename: payload.ExchangeName,
+	exchangetype: payload.ExchangeType,
+	queuename: payload.QueueName
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="ce99d801-5fb9-4ce4-87d2-b9fb62e1310e" />
+	</flow>
+	<flow name="postEventCatalog" doc:id="938ea246-13f2-407c-a9c7-b7813ba4c229" >
+		<db:insert doc:name="Insert" doc:id="4ef99733-f47b-407a-9baa-13b1e2d83139" config-ref="Database_Config">
+			<db:sql >INSERT INTO
+EventCatalog
+(
+	EventTypeID,EventName, ExchangeName, ExchangeType, QueueName
+)
+  VALUES
+  (
+  	:EventTypeID, :EventName, :ExchangeName, :ExchangeType, :QueueName
+ 	)</db:sql>
+			<db:input-parameters ><![CDATA[#[output application/java
+ ---
+ {
+     'EventTypeID' : payload.eventtypeid,
+     'EventName' : payload.eventname,
+     'ExchangeName' : payload.exchangename,
+     'ExchangeType' : payload.exchangetype,
+     'QueueName' : payload.queuename
+     
+ }]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="3c758e56-22db-4680-b2f7-2bb762c5792b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="18e4115c-c0dd-458a-b2a5-2577249f13a1" />
+	</flow>
+</mule>

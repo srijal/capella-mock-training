@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="eventcatalogs_json" format="json">
+      <types:shape format="weave" example="examples/eventcatalogs.json"><![CDATA[%dw 2.0
+type eventcatalogs_json = Array<{|
+  id: Number {"typeId": "int"}, 
+  eventtypeid: Number {"typeId": "int"}, 
+  eventname: String, 
+  exchangename: String, 
+  exchangetype: String, 
+  queuename: String
+|}> {"MetadataFormat": "json",
+"example": "[{\"id\":10,\"eventtypeid\":33,\"eventname\":\"New Student Enrollment\",\"exchangename\":\"capella.direct\",\"exchangetype\":\"direct\",\"queuename\":\"new.student.enrollment\"},{\"id\":2,\"eventtypeid\":45,\"eventname\":\"New Course 2019\",\"exchangename\":\"capella.fanout\",\"exchangetype\":\"fanout\",\"queuename\":\"new.course.2019\"}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="eventcatalogs_RAML" format="java">
+      <types:shape format="raml"><![CDATA[#%RAML 1.0 DataType
+type: object
+properties:
+  id: number
+  eventtypeid: number
+  eventname: string
+  exchangename: string
+  exchangetype: string
+  queuename: string]]></types:shape>
+    </types:type>
+    <types:type name="eventcatalog" format="json">
+      <types:shape format="weave" example="examples/eventcatalog.json"><![CDATA[%dw 2.0
+type eventcatalog = {|
+  id: Number {"typeId": "int"}, 
+  eventtypeid: Number {"typeId": "int"}, 
+  eventname: String, 
+  exchangename: String, 
+  exchangetype: String, 
+  queuename: String
+|} {"MetadataFormat": "json",
+"example": "{\"id\":10,\"eventtypeid\":33,\"eventname\":\"New Student Enrollment\",\"exchangename\":\"capella.direct\",\"exchangetype\":\"direct\",\"queuename\":\"new.student.enrollment\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#89854cc8-01e0-4f50-a290-bde5882d2412">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="eventcatalogs_json"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#eb1dd674-32ba-411c-b6a1-2c938445ad99">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="eventcatalog"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

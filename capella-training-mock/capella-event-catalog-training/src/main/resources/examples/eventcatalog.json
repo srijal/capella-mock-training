@@ -1,0 +1,8 @@
+{
+"id": 10,
+"eventtypeid": 33,
+"eventname": "New Student Enrollment",
+"exchangename": "capella.direct",
+"exchangetype": "direct",
+"queuename": "new.student.enrollment"
+}
